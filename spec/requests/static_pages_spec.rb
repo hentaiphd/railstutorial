@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-$title = "Rap Game Title"
+$title = "My Lovely Site"
 
 describe "StaticPages" do
     describe "title let method" do
@@ -23,6 +23,21 @@ describe "StaticPages" do
             title.should
         end
     end 
+
+    describe "title test base" do
+        it "should have the base title" do
+            visit '/static_pages/home'
+            expect(page).to have_title("My Lovely Site")
+        end
+    end
+
+    describe "title test custom" do
+        it "should not have a custom page title" do
+          visit '/static_pages/home'
+          expect(page).not_to have_title('| Home')
+        end
+    end
+
     describe "Home page" do
         it "should have the content 'Sample App'" do
             visit '/static_pages/home'

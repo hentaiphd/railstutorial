@@ -8,6 +8,7 @@ gem 'bootstrap-sass', '2.3.2.0'
 group :development, :test do
   gem 'sqlite3', '1.3.7'
   gem 'rspec-rails', '2.13.1'
+  gem 'debugger'
 end
 
 group :test do

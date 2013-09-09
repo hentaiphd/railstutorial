@@ -17,6 +17,27 @@ describe User do
 
     it { should be_valid }
 
+    describe "with a password that's too short" do
+        before { @user.password = @user.password_confirmation = "a" * 5 }
+        it {should be_invalid }
+    end
+
+    describe "return value of authenticate method" do
+        before { @user.save }
+        let(:found_user) { User.find_by(email: @user.email) }
+
+        describe "with valid password" do
+            it { should eq found_user.authenticate(@user.password) }
+        end
+
+        describe "with invalid password" do
+            let(:users_for_invalid_password) { found_user.authenticate("invalid") }
+
+            it { should_not eq users_for_invalid_password }
+            specify { expect(users_for_invalid_password).to be_false }
+        end
+    end
+
     describe "when password isn't present" do
         before do 
             @user = User.new(name: "Example User", email: "user@example.com", 

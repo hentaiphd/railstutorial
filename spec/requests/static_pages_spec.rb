@@ -41,10 +41,10 @@ describe "Static pages" do
     it_should_behave_like "all static pages"
   end
 
-    describe "Users page" do
+    describe "Sign up page" do
     before { visit signup_path }
-    let(:heading)    { 'Users' }
-    let(:page_title) { 'Users' }
+    let(:heading)    { 'Sign up' }
+    let(:page_title) { 'Sign up' }
 
     it_should_behave_like "all static pages"
   end

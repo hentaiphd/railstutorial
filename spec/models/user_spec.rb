@@ -16,14 +16,6 @@ describe User do
     it { should respond_to(:following?) }
     it { should respond_to(:follow!) }
     it { should respond_to(:unfollow!) }
-
-    before do
-        @user = User.new(name: "Example User", email: "user@example.com",
-                        password: "foobar", password_confirmation: "foobar")
-    end
-
-    subject { @user }
-
     it { should respond_to(:name) }
     it { should respond_to(:email) }
     it { should respond_to(:password_digest) }
@@ -31,6 +23,13 @@ describe User do
     it { should respond_to(:authenticate) }
     it { should respond_to(:admin) }
     it { should respond_to(:microposts) }
+
+    before do
+        @user = User.new(name: "Example User", email: "user@example.com",
+                        password: "foobar", password_confirmation: "foobar")
+    end
+
+    subject { @user }
 
     it { should be_valid }
 
@@ -147,20 +146,31 @@ describe User do
 
         before { @user.save }
         let!(:older_micropost) do
-          FactoryGirl.create(:micropost, user: @user, created_at: 1.day.ago)
+            FactoryGirl.create(:micropost, user: @user, created_at: 1.day.ago)
         end
         let!(:newer_micropost) do
-          FactoryGirl.create(:micropost, user: @user, created_at: 1.hour.ago)
+            FactoryGirl.create(:micropost, user: @user, created_at: 1.hour.ago)
         end
 
         describe "status" do
           let(:unfollowed_post) do
             FactoryGirl.create(:micropost, user: FactoryGirl.create(:user))
           end
+          let(:followed_user) { FactoryGirl.create(:user) }
+
+          before do
+            @user.follow!(followed_user)
+            3.times { followed_user.microposts.create!(content: "Lorem ipsum") }
+          end
 
           its(:feed) { should include(newer_micropost) }
           its(:feed) { should include(older_micropost) }
           its(:feed) { should_not include(unfollowed_post) }
+          its(:feed) do
+            followed_user.microposts.each do |micropost|
+              should include(micropost)
+            end
+          end
         end
 
         it "should have the right microposts in the right order" do
